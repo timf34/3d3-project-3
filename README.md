@@ -1,4 +1,13 @@
-# Project 2 - 3D3 - Blockchain messaging network 
+# Project 3 - 3D3 - Blockchain messaging network 
+
+# TODO - Project 3
+
+- [ ] Need to improve the robusteness of the network nodes
+  - ie show that... 
+  - Also include response statuses for each request 
+  - Also include a way to show the status of the network
+- [ ] Need to show robustness to content types in the network
+  - ie strings, integers, etc.
 
 ## Instructions
 ### Setup:
