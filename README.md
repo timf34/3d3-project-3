@@ -2,12 +2,23 @@
 
 # TODO - Project 3
 
-- [ ] Need to improve the robusteness of the network nodes
-  - ie show that... 
-  - Also include response statuses for each request 
-  - Also include a way to show the status of the network
+- [ ] Need to improve the robustness of the network nodes
+  - The best way to do this is to post status responses, to the 
+  terminal is probably not the best way to do this but enough for now.
+  We would probably want to have a **constant status response displayed 
+  on the webpage**!
 - [ ] Need to show robustness to content types in the network
-  - ie strings, integers, etc.
+  - Show that our network can handle different input types. 
+
+
+
+## Project 3 - Global Problem 
+
+With this project we are looking to contribute to the global problem 
+that is Cancel Culture and Free Speech. In order to help combat this 
+problem we are looking to build a network of nodes that can be used 
+to communicate and publish to a public message board where all messages 
+are stored _forever_. 
 
 ## Instructions
 ### Setup:
