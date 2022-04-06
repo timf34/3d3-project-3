@@ -8,6 +8,10 @@ from typing import Tuple, Union
 from blockchain import Blockchain
 from block import Block
 
+"""
+ Ignore this file for now. Its not being used 
+"""
+
 
 app = Flask(__name__)
 
