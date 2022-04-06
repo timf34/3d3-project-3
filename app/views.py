@@ -38,12 +38,13 @@ def fetch_posts():
 def index():
     fetch_posts()
     return render_template('index.html',
-                           title='3D3 Project 2: Decentralized Blockchain message board',
+                           title='3D3 Project 3: decentralized blockchain message board where ideas can live forever!',
                            posts=posts,
                            node_address=CONNECTED_NODE_ADDRESS,
                            readable_time=timestamp_to_string)
 
 
+# TODO: this is where the user can post a message to the blockchain (not sure what the best way to test a web app is...)
 @app.route('/submit', methods=['POST'])
 def submit_textarea():
     """
@@ -51,6 +52,28 @@ def submit_textarea():
     """
     post_content = request.form["content"]
     author = request.form["author"]
+
+    post_object = {
+        'author': author,
+        'content': post_content,
+    }
+
+    # Submit a transaction
+    new_tx_address = "{}/new_transaction".format(CONNECTED_NODE_ADDRESS)
+
+    requests.post(new_tx_address,
+                  json=post_object,
+                  headers={'Content-type': 'application/json'})
+
+    return redirect('/')
+
+
+def test_submit_textarea():
+    """
+    Test the submit_textarea() function.
+    """
+    post_content = "Hello, world!"
+    author = "Sia"
 
     post_object = {
         'author': author,
