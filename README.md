@@ -1,6 +1,6 @@
 # Project 3 - 3D3 - Blockchain messaging network 
 
-# TODO - Project 3
+# General TODO - Project 3
 
 - [ ] Need to improve the robustness of the network nodes
   - The best way to do this is to post status responses, to the 
@@ -8,7 +8,16 @@
   We would probably want to have a **constant status response displayed 
   on the webpage**!
 - [ ] Need to show robustness to content types in the network
-  - Show that our network can handle different input types. 
+  - Show that our network can handle different input types.
+- [ ] Refamiliarize myself with the code base to spot where the improvements
+  are needed.
+
+## Programming TODO 
+- [ ] Add test cases directly in the code rather than having to use the 
+    web interface. 
+- [ ] Post the https response status to the web interface.
+
+
 
 
 
@@ -69,6 +78,44 @@ python run_app.py
 ```
 
 Now you should be able to access the app at [http://localhost:5000](http://localhost:5000). 
+
+### Setting up multiple nodes 
+
+We can set up multiple nodes by using multiple terminals. Also note that for these
+instructions, its best to use a bash terminal for the `curl` commands as command 
+prompt and powershell seem to act strangely to the quotes ' and ". 
+
+Follow from the instructions above where we have a node set up at local port `8000`.
+We can now repeat the process setting up nodes with ports `8001`, `8002`, `8003` etc.
+
+Ensure to set the environment variable `FLASK_APP` to `network.py` in each terminal.
+
+Run `flask run --port 8001` 
+
+Then to register the nodes, and ensure you do this in a bash terminal (such as Git Bash)
+run 
+
+```
+curl -X POST http://127.0.0.1:8001/register_with -H 'Content-Type: application/json' -d '{"node_address": "http://127.0.0.1:8000"}'
+```
+
+It should say _registration successful_. 
+Also make sure to do this before you have posted to the message board. 
+
+You can repeat this process on as many ports as you want. 
+
+To check whether this is working, we can query the nodes for a copy of their blockchain.
+So after we have posted a few messages to the message board, we can run:
+
+```
+curl -X GET http://localhost:8001/chain
+```
+
+This will show us whether its working or not. Thus far it isn't 
+
+
+
+
 
 ### Functionality
 

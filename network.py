@@ -4,6 +4,7 @@ from blockchain import Blockchain
 import requests
 import json
 import time
+import sys
 
 
 app = Flask(__name__)
@@ -82,6 +83,7 @@ def register_with_existing_node():
     request, and sync the blockchain as well as peer data.
     """
     node_address = request.get_json()["node_address"]
+    print(node_address)
     if not node_address:
         return "Invalid data", 400
 
@@ -97,12 +99,13 @@ def register_with_existing_node():
         global peers
         # update chain and the peers
         chain_dump = response.json()['chain']
+        print("chain dump", chain_dump, file=sys.stderr)
         blockchain = create_chain_from_dump(chain_dump)
         peers.update(response.json()['peers'])
         return "Registration successful", 200
     else:
         # if something goes wrong, pass it on to the API response
-        return response.content, response.status_code
+        return response.content, response.status_code, "Registration failed"
 
 
 def create_chain_from_dump(chain_dump):
@@ -185,8 +188,7 @@ def announce_new_block(block):
         url = "{}add_block".format(peer)
         headers = {'Content-Type': "application/json"}
         requests.post(url,
-                      data=json.dumps(block.__dict__, sort_keys=True),
-                      headers=headers)
+                      data=json.dumps(block.__dict__, sort_keys=True), headers=headers)
 
 # Uncomment this line if you want to specify the port number in the code
 # app.run(debug=True, port=8000)

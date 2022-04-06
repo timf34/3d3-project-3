@@ -68,6 +68,7 @@ def submit_textarea():
     return redirect('/')
 
 
+@app.route('/submit', methods=['POST'])
 def test_submit_textarea():
     """
     Test the submit_textarea() function.
@@ -83,7 +84,7 @@ def test_submit_textarea():
     # Submit a transaction
     new_tx_address = "{}/new_transaction".format(CONNECTED_NODE_ADDRESS)
 
-    requests.post(new_tx_address,
+    app.post(new_tx_address,
                   json=post_object,
                   headers={'Content-type': 'application/json'})
 
