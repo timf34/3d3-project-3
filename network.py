@@ -57,7 +57,13 @@ def mine_unconfirmed_transactions():
     if not result:
         return "No transactions to mine"
     else:
-        return "Newest blocks added: " + str(result)
+        # Making sure we have the longest chain before announcing to the network
+        chain_length = len(blockchain.chain)
+        consensus()
+        if chain_length == len(blockchain.chain):
+            # announce the recently mined block to the network
+            announce_new_block(blockchain.last_block)
+        return "Block #{} is mined.".format(blockchain.last_block.index)
 
 
 # endpoint to add new peers to the network.
@@ -116,7 +122,6 @@ def create_chain_from_dump(chain_dump):
             continue  # skip genesis block
         block = Block(block_data["index"],
                       block_data["transactions"],
-                      block_data["timestamp"],
                       block_data["previous_hash"],
                       block_data["nonce"])
         proof = block_data['hash']
@@ -134,7 +139,6 @@ def verify_and_add_block():
     block_data = request.get_json()
     block = Block(block_data["index"],
                   block_data["transactions"],
-                  block_data["timestamp"],
                   block_data["previous_hash"],
                   block_data["nonce"])
 
@@ -150,7 +154,7 @@ def verify_and_add_block():
 # endpoint to query unconfirmed transactions
 @app.route('/pending_tx')
 def get_pending_tx():
-    return json.dumps(blockchain.unconfirmed_transactions)
+    return json.dumps(blockchain.current_transactions)
 
 
 def consensus():
@@ -188,7 +192,9 @@ def announce_new_block(block):
         url = "{}add_block".format(peer)
         headers = {'Content-Type': "application/json"}
         requests.post(url,
-                      data=json.dumps(block.__dict__, sort_keys=True), headers=headers)
+                      data=json.dumps(block.__dict__, sort_keys=True),
+                      headers=headers)
 
-# Uncomment this line if you want to specify the port number in the code
-# app.run(debug=True, port=8000)
+if __name__ == '__main__':
+    app.run(debug=True, port=8000)
+

@@ -16,7 +16,8 @@ class Blockchain:
         genesis_block.hash = genesis_block.compute_hash()
         self.chain.append(genesis_block)
 
-    def get_last_block(self) -> Block:
+    @property
+    def last_block(self) -> Block:
         """
         Returns the last block of the chain
         """
@@ -26,7 +27,7 @@ class Blockchain:
         """
         Adds a block to the chain
         """
-        previous_hash = self.get_last_block().hash
+        previous_hash = self.last_block.hash
         if previous_hash != block.previous_hash:
             return False
         if not self.is_valid_proof(block, proof):
@@ -96,7 +97,7 @@ class Blockchain:
         """
         if not self.current_transactions:
             return False
-        last_block = self.get_last_block()
+        last_block = self.last_block
         print("last_block.hash: ", last_block.hash)
         new_block = Block(index=last_block.index + 1,
                           transactions=self.current_transactions,
