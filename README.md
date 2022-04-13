@@ -111,9 +111,8 @@ So after we have posted a few messages to the message board, we can run:
 curl -X GET http://localhost:8001/chain
 ```
 
-This will show us whether its working or not. Thus far it isn't 
-
-
+This will show us whether the multiple nodes are working or not - we can query it to 
+see if the other nodes (8001, 8002, etc.) are updating their blockchain!
 
 
 
