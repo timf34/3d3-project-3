@@ -3,12 +3,12 @@ import time  # for timestamp
 
 
 class Block(object):
-    def __init__(self, index: int, transactions: list, previous_hash: str, nonce: int = 0):
+    def __init__(self, index: int, transactions: list, timestamp: int, previous_hash: str, nonce: int = 0):
         self.index = index
         self.transactions = transactions
         self.previous_hash = previous_hash
         self.nonce = nonce
-        self.timestamp = time.time()
+        self.timestamp = timestamp
 
     def compute_hash(self):
         """

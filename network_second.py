@@ -5,29 +5,7 @@ import time
 from flask import Flask, request
 import requests
 
-
-class Block(object):
-    def __init__(self, index: int, transactions: list, timestamp: int, previous_hash: str, nonce: int = 0):
-        self.index = index
-        self.transactions = transactions
-        self.previous_hash = previous_hash
-        self.nonce = nonce
-        self.timestamp = timestamp
-
-    def compute_hash(self):
-        """
-        A function that return the hash of the block contents.
-        """
-        block_string = f'{self.index} {self.transactions} {self.timestamp} {self.previous_hash} {self.nonce}'.encode()
-        return sha256(block_string).hexdigest()
-
-    def __repr__(self):
-        return f'Block: {self.index}\n' \
-               f'Transactions: {self.transactions}\n' \
-               f'Timestamp: {self.timestamp}\n' \
-               f'Previous Hash: {self.previous_hash}\n' \
-               f'Hash: {self.compute_hash()}\n'
-
+from block import Block
 
 class Blockchain:
     def __init__(self, difficulty: int = 2):
