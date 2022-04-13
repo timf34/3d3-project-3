@@ -30,11 +30,10 @@ class Block(object):
 
 
 class Blockchain:
-    difficulty = 2
-    def __init__(self):
+    def __init__(self, difficulty: int = 2):
         self.chain = []
         self.unconfirmed_transactions = []
-
+        self.difficulty = difficulty
 
     def create_genesis_block(self):
         """
@@ -64,31 +63,36 @@ class Blockchain:
         self.chain.append(block)
         return True
 
-    @staticmethod
-    def proof_of_work(block):
+    def proof_of_work(self, block: Block) -> int:
         """
-        Function that tries different values of nonce to get a hash
-        that satisfies our difficulty criteria.
+        Finds a valid proof of work for the block
         """
-        block.nonce = 0
+        """ Note: This doesn't work and was the source of the weird hashes and previous hashes - come back and have
+        another look at it!
+        proof = 0
+        # TODO: I might be missing the .compute_hash() method here instead of relying on the above
+        while not self.is_valid_proof(block, proof):
+            proof += 1
+        return proof
+        """
+        block.nonce=0
+        temp_hash=block.compute_hash()
+        while not temp_hash.startswith('0' * self.difficulty):
+            block.nonce+=1
+            temp_hash=block.compute_hash()
 
-        computed_hash = block.compute_hash()
-        while not computed_hash.startswith('0' * Blockchain.difficulty):
-            block.nonce += 1
-            computed_hash = block.compute_hash()
+        return temp_hash
 
-        return computed_hash
 
     def add_new_transaction(self, transaction):
         self.unconfirmed_transactions.append(transaction)
 
-    @classmethod
-    def is_valid_proof(cls, block, block_hash):
+    def is_valid_proof(self, block, block_hash):
         """
         Check if block_hash is valid hash of block and satisfies
         the difficulty criteria.
         """
-        return (block_hash.startswith('0' * Blockchain.difficulty) and
+        return (block_hash.startswith('0' * self.difficulty) and
                 block_hash == block.compute_hash())
 
     @classmethod
