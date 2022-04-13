@@ -68,28 +68,6 @@ def submit_textarea():
     return redirect('/')
 
 
-@app.route('/submit', methods=['POST'])
-def test_submit_textarea():
-    """
-    Test the submit_textarea() function.
-    """
-    post_content = "Hello, world!"
-    author = "Sia"
-
-    post_object = {
-        'author': author,
-        'content': post_content,
-    }
-
-    # Submit a transaction
-    new_tx_address = "{}/new_transaction".format(CONNECTED_NODE_ADDRESS)
-
-    app.post(new_tx_address,
-                  json=post_object,
-                  headers={'Content-type': 'application/json'})
-
-    return redirect('/')
-
 
 def timestamp_to_string(epoch_time):
     return datetime.datetime.fromtimestamp(epoch_time).strftime('%H:%M')

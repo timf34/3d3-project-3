@@ -4,7 +4,6 @@ from blockchain import Blockchain
 import requests
 import json
 import time
-import sys
 
 
 app = Flask(__name__)
@@ -40,9 +39,7 @@ def new_transaction():
 # all the posts to display.
 @app.route('/chain', methods=['GET'])
 def get_chain():
-    chain_data = []
-    for block in blockchain.chain:
-        chain_data.append(block.__dict__)
+    chain_data = [block.__dict__ for block in blockchain.chain]
     return json.dumps({"length": len(chain_data),
                        "chain": chain_data,
                        "peers": list(peers)})
@@ -62,6 +59,7 @@ def mine_unconfirmed_transactions():
         consensus()
         if chain_length == len(blockchain.chain):
             # announce the recently mined block to the network
+            print("announcing new block called")
             announce_new_block(blockchain.last_block)
         return "Block #{} is mined.".format(blockchain.last_block.index)
 
@@ -89,7 +87,6 @@ def register_with_existing_node():
     request, and sync the blockchain as well as peer data.
     """
     node_address = request.get_json()["node_address"]
-    print(node_address)
     if not node_address:
         return "Invalid data", 400
 
@@ -105,13 +102,13 @@ def register_with_existing_node():
         global peers
         # update chain and the peers
         chain_dump = response.json()['chain']
-        print("chain dump", chain_dump, file=sys.stderr)
+        # print("chain dump", chain_dump, file=sys.stderr)
         blockchain = create_chain_from_dump(chain_dump)
         peers.update(response.json()['peers'])
         return "Registration successful", 200
     else:
         # if something goes wrong, pass it on to the API response
-        return response.content, response.status_code, "Registration failed"
+        return response.content, response.status_code
 
 
 def create_chain_from_dump(chain_dump):
@@ -151,7 +148,7 @@ def verify_and_add_block():
     return "Block added to the chain", 201
 
 
-# endpoint to query unconfirmed transactions
+# endpoint to query current transactions
 @app.route('/pending_tx')
 def get_pending_tx():
     return json.dumps(blockchain.current_transactions)
@@ -166,12 +163,13 @@ def consensus():
 
     longest_chain = None
     current_len = len(blockchain.chain)
+    print("consensus")
 
     for node in peers:
         response = requests.get('{}chain'.format(node))
         length = response.json()['length']
         chain = response.json()['chain']
-        if length > current_len and blockchain.check_chain_validity(chain):
+        if length > current_len:
             current_len = length
             longest_chain = chain
 
@@ -188,6 +186,7 @@ def announce_new_block(block):
     Other blocks can simply verify the proof of work and add it to their
     respective chains.
     """
+    print("announcing new block called")
     for peer in peers:
         url = "{}add_block".format(peer)
         headers = {'Content-Type': "application/json"}
