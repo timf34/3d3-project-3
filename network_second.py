@@ -5,60 +5,61 @@ import time
 from flask import Flask, request
 import requests
 
-class Block:
-    def __init__(self, index, transactions, timestamp, previous_hash, nonce=0):
+
+class Block(object):
+    def __init__(self, index: int, transactions: list, timestamp: int, previous_hash: str, nonce: int = 0):
         self.index = index
         self.transactions = transactions
-        self.timestamp = timestamp
         self.previous_hash = previous_hash
         self.nonce = nonce
+        self.timestamp = timestamp
 
     def compute_hash(self):
         """
         A function that return the hash of the block contents.
         """
-        block_string = json.dumps(self.__dict__, sort_keys=True)
-        return sha256(block_string.encode()).hexdigest()
+        block_string = f'{self.index} {self.transactions} {self.timestamp} {self.previous_hash} {self.nonce}'.encode()
+        return sha256(block_string).hexdigest()
+
+    def __repr__(self):
+        return f'Block: {self.index}\n' \
+               f'Transactions: {self.transactions}\n' \
+               f'Timestamp: {self.timestamp}\n' \
+               f'Previous Hash: {self.previous_hash}\n' \
+               f'Hash: {self.compute_hash()}\n'
 
 
 class Blockchain:
-    # difficulty of our PoW algorithm
     difficulty = 2
-
     def __init__(self):
-        self.unconfirmed_transactions = []
         self.chain = []
+        self.unconfirmed_transactions = []
+
 
     def create_genesis_block(self):
         """
-        A function to generate genesis block and appends it to
-        the chain. The block has index 0, previous_hash as 0, and
-        a valid hash.
+        Creates the genesis block
         """
         genesis_block = Block(0, [], 0, "0")
         genesis_block.hash = genesis_block.compute_hash()
         self.chain.append(genesis_block)
 
     @property
-    def last_block(self):
+    def last_block(self) -> Block:
+        """
+        Returns the last block of the chain
+        """
         return self.chain[-1]
 
-    def add_block(self, block, proof):
+    def add_block(self, block: Block, proof: str) -> bool:
         """
-        A function that adds the block to the chain after verification.
-        Verification includes:
-        * Checking if the proof is valid.
-        * The previous_hash referred in the block and the hash of latest block
-          in the chain match.
+        Adds a block to the chain
         """
         previous_hash = self.last_block.hash
-
         if previous_hash != block.previous_hash:
             return False
-
-        if not Blockchain.is_valid_proof(block, proof):
+        if not self.is_valid_proof(block, proof):
             return False
-
         block.hash = proof
         self.chain.append(block)
         return True
@@ -325,7 +326,7 @@ def announce_new_block(block):
                       data=json.dumps(block.__dict__, sort_keys=True),
                       headers=headers)
 
+
 # Uncomment this line if you want to specify the port number in the code
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
-
