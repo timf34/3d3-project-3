@@ -101,7 +101,6 @@ class Blockchain:
         """
         Validates the chain
         """
-        # TODO: test this method
         last_block = chain[0]
         current_index = 1
         while current_index < len(chain):
