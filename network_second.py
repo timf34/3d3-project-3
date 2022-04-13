@@ -63,7 +63,7 @@ class Blockchain:
         self.chain.append(block)
         return True
 
-    def proof_of_work(self, block: Block) -> int:
+    def proof_of_work(self, block: Block) -> str:
         """
         Finds a valid proof of work for the block
         """
@@ -83,8 +83,10 @@ class Blockchain:
 
         return temp_hash
 
-
-    def add_new_transaction(self, transaction):
+    def add_new_transaction(self, transaction: dict) -> None:
+        """
+        Adds a new transaction to the list of transactions
+        """
         self.unconfirmed_transactions.append(transaction)
 
     def is_valid_proof(self, block, block_hash):
@@ -95,25 +97,23 @@ class Blockchain:
         return (block_hash.startswith('0' * self.difficulty) and
                 block_hash == block.compute_hash())
 
-    @classmethod
-    def check_chain_validity(cls, chain):
-        result = True
-        previous_hash = "0"
-
-        for block in chain:
-            block_hash = block.hash
-            # remove the hash field to recompute the hash again
-            # using `compute_hash` method.
-            delattr(block, "hash")
-
-            if not cls.is_valid_proof(block, block_hash) or \
-                    previous_hash != block.previous_hash:
-                result = False
-                break
-
-            block.hash, previous_hash = block_hash, block_hash
-
-        return result
+    def is_valid_chain(cls, chain: list) -> bool:
+        """
+        Validates the chain
+        """
+        # TODO: test this method
+        last_block = chain[0]
+        current_index = 1
+        while current_index < len(chain):
+            block = chain[current_index]
+            print("block,", block, "block hash", block.hash)
+            if block.previous_hash != last_block.hash:
+                return False
+            if not cls.is_valid_proof(block, block.hash):
+                return False
+            last_block = block
+            current_index += 1
+        return True
 
     def mine(self):
         """
@@ -125,18 +125,20 @@ class Blockchain:
             return False
 
         last_block = self.last_block
-
         new_block = Block(index=last_block.index + 1,
                           transactions=self.unconfirmed_transactions,
                           timestamp=time.time(),
                           previous_hash=last_block.hash)
-
         proof = self.proof_of_work(new_block)
         self.add_block(new_block, proof)
-
         self.unconfirmed_transactions = []
-
         return True
+
+    def __repr__(self):
+        return f'{self.chain}'
+
+    def __len__(self):
+        return len(self.chain)
 
 
 app = Flask(__name__)
