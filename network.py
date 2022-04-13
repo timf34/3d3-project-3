@@ -1,9 +1,14 @@
-from flask import Flask, request
-from block import Block
-from blockchain import Blockchain
-import requests
+from hashlib import sha256
 import json
 import time
+
+from flask import Flask, request
+import requests
+
+from block import Block
+from blockchain import Blockchain
+
+
 
 
 app = Flask(__name__)
@@ -39,7 +44,9 @@ def new_transaction():
 # all the posts to display.
 @app.route('/chain', methods=['GET'])
 def get_chain():
-    chain_data = [block.__dict__ for block in blockchain.chain]
+    chain_data = []
+    for block in blockchain.chain:
+        chain_data.append(block.__dict__)
     return json.dumps({"length": len(chain_data),
                        "chain": chain_data,
                        "peers": list(peers)})
@@ -102,7 +109,6 @@ def register_with_existing_node():
         global peers
         # update chain and the peers
         chain_dump = response.json()['chain']
-        # print("chain dump", chain_dump, file=sys.stderr)
         blockchain = create_chain_from_dump(chain_dump)
         peers.update(response.json()['peers'])
         return "Registration successful", 200
@@ -119,6 +125,7 @@ def create_chain_from_dump(chain_dump):
             continue  # skip genesis block
         block = Block(block_data["index"],
                       block_data["transactions"],
+                      block_data["timestamp"],
                       block_data["previous_hash"],
                       block_data["nonce"])
         proof = block_data['hash']
@@ -136,6 +143,7 @@ def verify_and_add_block():
     block_data = request.get_json()
     block = Block(block_data["index"],
                   block_data["transactions"],
+                  block_data["timestamp"],
                   block_data["previous_hash"],
                   block_data["nonce"])
 
@@ -148,10 +156,10 @@ def verify_and_add_block():
     return "Block added to the chain", 201
 
 
-# endpoint to query current transactions
+# endpoint to query unconfirmed transactions
 @app.route('/pending_tx')
 def get_pending_tx():
-    return json.dumps(blockchain.current_transactions)
+    return json.dumps(blockchain.unconfirmed_transactions)
 
 
 def consensus():
@@ -169,7 +177,7 @@ def consensus():
         response = requests.get('{}chain'.format(node))
         length = response.json()['length']
         chain = response.json()['chain']
-        if length > current_len:
+        if length > current_len and blockchain.check_chain_validity(chain):
             current_len = length
             longest_chain = chain
 
@@ -194,6 +202,7 @@ def announce_new_block(block):
                       data=json.dumps(block.__dict__, sort_keys=True),
                       headers=headers)
 
+
+# Uncomment this line if you want to specify the port number in the code
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
-
