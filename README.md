@@ -92,7 +92,7 @@ Ensure to set the environment variable `FLASK_APP` to `network.py` in each termi
 
 Run `flask run --port 8001` 
 
-Then to register the nodes, and *ensure you do this in a bash terminal* (such as Git Bash)
+Then to register the nodes, and **ensure you do this in a bash terminal** (such as Git Bash)
 run 
 
 ```
