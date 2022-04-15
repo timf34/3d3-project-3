@@ -114,6 +114,9 @@ curl -X GET http://localhost:8001/chain
 This will show us whether the multiple nodes are working or not - we can query it to 
 see if the other nodes (8001, 8002, etc.) are updating their blockchain!
 
+For example, run the above code with multiple nodes running, then post some messages to the web app - watch the blockchain be 
+updated!
+
 
 
 ### Functionality
