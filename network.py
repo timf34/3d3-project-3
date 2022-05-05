@@ -9,8 +9,6 @@ from block import Block
 from blockchain import Blockchain
 
 
-
-
 app = Flask(__name__)
 
 # the node's copy of blockchain
