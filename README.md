@@ -92,7 +92,7 @@ Ensure to set the environment variable `FLASK_APP` to `network.py` in each termi
 
 Run `flask run --port 8001` 
 
-Then to register the nodes, and ensure you do this in a bash terminal (such as Git Bash)
+Then to register the nodes, and **ensure you do this in a bash terminal** (such as Git Bash) (to avoid issues with parsing the " and ')
 run 
 
 ```
@@ -113,6 +113,9 @@ curl -X GET http://localhost:8001/chain
 
 This will show us whether the multiple nodes are working or not - we can query it to 
 see if the other nodes (8001, 8002, etc.) are updating their blockchain!
+
+For example, run the above code with multiple nodes running, then post some messages to the web app - watch the blockchain be 
+updated!
 
 
 
