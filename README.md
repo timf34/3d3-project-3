@@ -2,6 +2,8 @@
 
 # General TODO - Project 3
 
+Note: these would still be nice TODOs - get round to them over summer
+
 - [ ] Need to improve the robustness of the network nodes
   - The best way to do this is to post status responses, to the 
   terminal is probably not the best way to do this but enough for now.
