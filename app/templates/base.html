@@ -1,20 +1,27 @@
 <html>
-  <head>
-    <title>{{ title }}</title>
-  </head>
-  <body>
-    <div><a href="/index">Home</a></div>
-    <center><h1>{{ title }}</h1></center>
-    <hr>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
+
+<head>
+  <title>{{ title }}</title>
+</head>
+
+<body style="background-color: bisque;">
+  <center>
+    <h1 style="color: brown;">{{ title }}</h1>
+  </center>
+
+  <p>Node: {{node_address[-4:]}}</p>
+  <button style="float: right; font-size: 12px; background-color: brown; color: #f0f0f0;">Connect VPN</button>
+  <hr>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul>
     {% for message in messages %}
-        <li>{{ message }} </li>
+    <li>{{ message }} </li>
     {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-    {% block content %}{% endblock %}
-  </body>
+  </ul>
+  {% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</body>
+
 </html>
